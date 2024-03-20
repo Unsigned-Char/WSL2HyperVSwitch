@@ -8,18 +8,19 @@ This recipe uses a Hyper-V virtual switch to bridge the WSL 2 network, providing
 
 ### Steps
 1. **Enable Hyper-V and Management PowerShell Features:**
-   ```powershell
-   Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V
-   Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Management-PowerShell
-   ```
+   - Open PowerShell as administrator and run:
+     ```powershell
+     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V
+     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Management-PowerShell
+     ```
 
-2. **Create an External Virtual Switch in Hyper-V:**
+3. **Create an External Virtual Switch in Hyper-V:**
    - Open PowerShell as administrator and run:
      ```powershell
      New-VMSwitch -Name "External Switch" -NetAdapterName eth0
      ```
 
-3. **Modify the WSL Configuration:**
+4. **Modify the WSL Configuration:**
    - Create or modify the `.wslconfig` file in your user profile directory (`$env:USERPROFILE/.wslconfig`) with the following content:
      ```plaintext
      [wsl2]
@@ -29,7 +30,7 @@ This recipe uses a Hyper-V virtual switch to bridge the WSL 2 network, providing
      ipv6=true
      ```
 
-4. **Enable systemd in the WSL Distribution:**
+5. **Enable systemd in the WSL Distribution:**
    - Edit the `/etc/wsl.conf` file in your WSL distribution and add the following lines:
      ```plaintext
      [boot]
@@ -39,7 +40,7 @@ This recipe uses a Hyper-V virtual switch to bridge the WSL 2 network, providing
      generateResolvConf = false
      ```
 
-5. **Configure Network Addressing:**
+6. **Configure Network Addressing:**
    - For dynamic address configuration, ensure the following is present in `/etc/systemd/network/10-eth0.network`:
      ```plaintext
      [Match]
@@ -57,13 +58,13 @@ This recipe uses a Hyper-V virtual switch to bridge the WSL 2 network, providing
      DNS=192.168.x.x
      ```
 
-6. **Link systemd Resolv.conf:**
+7. **Link systemd Resolv.conf:**
    - Create a symbolic link to link resolv.conf from systemd:
      ```bash
      ln -sfv /run/systemd/resolve/resolv.conf /etc/resolv.conf
      ```
 
-7. **Verification:**
+8. **Verification:**
    - Restart the WSL 2 instance and verify the network configuration with:
      ```bash
      ip addr show eth0
